@@ -13,8 +13,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{99422b19-ff33-460e-abc3-8043fbd0257f}</ProjectGuid>
-    <RootNamespace>netpropdump</RootNamespace>
+    <ProjectGuid>{d86250e4-3bf8-48f4-ab33-a27fccd1e228}</ProjectGuid>
+    <RootNamespace>propfunchooks</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -47,10 +47,11 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;NETPROPDUMP_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;PROPFUNCHOOKS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>..;..\..;%(AdditionalIncludeDirectories);$(HL2SDK_EP1C);$(HL2SDK_EP1)\public;$(HL2SDK_EP1C)\public\tier1;$(HL2SDK_EP1C)\vgui2\include;$(HL2SDK_EP1C)\vgui2\controls;$(HL2SDK_EP1C)\game\shared;$(HL2SDK_EP1C)\game\shared\cstrike;$(HL2SDK_EP1C)\game\client\game_controls;$(HL2SDK_EP1C)\game\client\cstrike;$(HL2SDK_EP1C)\game\client\cstrike\VGUI;$(HL2SDK_EP1C)\game\client\;$(HL2SDK_EP1C)\public\game\server\;$(HL2SDK_EP1C)\public\engine;$(HL2SDK_EP1C)\game\server\;$(HL2SDK_EP1C)\public\tier0;$(HL2SDK_EP1C)\public;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -66,16 +67,15 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;NETPROPDUMP_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;PROPFUNCHOOKS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>..;..\..;%(AdditionalIncludeDirectories);$(HL2SDK_EP1C);$(HL2SDK_EP1)\public;$(HL2SDK_EP1C)\public\tier1;$(HL2SDK_EP1C)\vgui2\include;$(HL2SDK_EP1C)\vgui2\controls;$(HL2SDK_EP1C)\game\shared;$(HL2SDK_EP1C)\game\shared\cstrike;$(HL2SDK_EP1C)\game\client\game_controls;$(HL2SDK_EP1C)\game\client\cstrike;$(HL2SDK_EP1C)\game\client\cstrike\VGUI;$(HL2SDK_EP1C)\game\client\;$(HL2SDK_EP1C)\public\game\server\;$(HL2SDK_EP1C)\public\engine;$(HL2SDK_EP1C)\game\server\;$(HL2SDK_EP1C)\public\tier0;$(HL2SDK_EP1C)\public;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>$(HL2SDK_EP1C)\lib\public\mathlib.lib;$(HL2SDK_EP1C)\lib\public\tier0.lib;$(HL2SDK_EP1C)\lib\public\tier1.lib;$(HL2SDK_EP1C)\lib\public\vstdlib.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>

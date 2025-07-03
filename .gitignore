@@ -1,3 +1,4 @@
 
-/netprop_dump/.vs
-/netprop_dump/Release
+*/.vs
+*/Release
+*/Debug

@@ -1,11 +1,13 @@
 ﻿//https://wiki.alliedmods.net/Entity_properties
 
+#include <vector>
+#include <algorithm>
 #include "icvar.h"
 #include "eiface.h"
 #include "cdll_int.h"
 #include "server_class.h"
+#include "client_class.h"
 #include <time.h>
-
 #include <Windows.h>
 #ifdef GetProp
 #undef GetProp
@@ -14,7 +16,22 @@
 #undef CopyFile
 #endif
 
-#define CSS_61
+void sort_classes(std::vector<ClientClass*>& classes)
+{
+  for (size_t i = 1; i < classes.size(); ++i) {
+    ClientClass* key = classes[i];
+    size_t j = i;
+    while (j > 0 && strcmp(classes[j - 1]->GetName(), key->GetName()) > 0) {
+      classes[j] = classes[j - 1];
+      --j;
+    }
+    classes[j] = key;
+  }
+}
+
+#define XML_BUF_SIZE 1024
+
+//#define CSS_61
 
 #if defined(_WIN32)
 inline FILE* fopen_internal(const char* p_filename, const char* p_mode)
@@ -59,6 +76,7 @@ HMODULE h_this_dll = nullptr;
 FILE* p_conout = nullptr;
 ICvar* p_cvar = nullptr;
 IServerGameDLL* p_server_gamedll = nullptr;
+IBaseClientDLL* p_client_dll = nullptr;
 IVEngineClient* p_engine_client = nullptr;
 IVEngineServer* p_engine_server = nullptr;
 
@@ -125,10 +143,12 @@ BOOL init()
   /* get IServerGameDLL */
 #ifdef CSS_61
   GET_INTERFACE_AND_CHECK(p_server_gamedll, p_server_factory, IServerGameDLL, INTERFACEVERSION_SERVERGAMEDLL, FALSE)
+  GET_INTERFACE_AND_CHECK(p_client_dll, p_client_factory, IBaseClientDLL, CLIENT_DLL_INTERFACE_VERSION, FALSE)
   GET_INTERFACE_AND_CHECK(p_engine_server, p_engine_factory, IVEngineServer, INTERFACEVERSION_VENGINESERVER, FALSE)
   GET_INTERFACE_AND_CHECK(p_engine_client, p_engine_factory, IVEngineClient, "VEngineClient013", FALSE)
 #else
   GET_INTERFACE_AND_CHECK(p_server_gamedll, p_server_factory, IServerGameDLL, "ServerGameDLL006", FALSE)
+  GET_INTERFACE_AND_CHECK(p_client_dll, p_client_factory, IBaseClientDLL, CLIENT_DLL_INTERFACE_VERSION, FALSE)
   GET_INTERFACE_AND_CHECK(p_engine_server, p_engine_factory, IVEngineServer, INTERFACEVERSION_VENGINESERVER, FALSE)
   GET_INTERFACE_AND_CHECK(p_engine_client, p_engine_factory, IVEngineClient, VENGINE_CLIENT_INTERFACE_VERSION, FALSE)
 #endif
@@ -360,6 +380,116 @@ CON_COMMAND(netprops_dump_xml, "")
   fprintf(fp, "</netprops>\n");
   fclose(fp);
 }
+
+#define VALUE
+
+void UTIL_DrawRecvTable_XML(FILE *fp, RecvTable* pTable, int space_count)
+{
+  char spaces[256];
+  Q_memset(spaces, ' ', space_count);
+  spaces[space_count] = '\0';
+  fprintf(fp, " %s<sendtable name='%s'>\n", spaces, pTable->GetName());
+
+  for (int i = 0; i < pTable->GetNumProps(); i++)
+  {
+    RecvProp* pProp = pTable->GetProp(i);
+
+    // <property name=...>
+    fprintf(fp, "  %s<property name='%s'>\n", spaces, pProp->GetName());
+
+    // <type>...</type>
+    const char* type_name = GetDTTypeName(pProp->GetType());
+    if (type_name)
+    {
+      fprintf(fp, "   %s<type>%s</type>\n", spaces, type_name);
+    }
+    else
+    {
+      fprintf(fp, "   %s<type>%d</type>\n", spaces, pProp->GetType());
+    }
+
+    // <elemstride>
+    fprintf(fp, "   %s<elemstride>%d</elemstride>\n", spaces, pProp->GetElementStride());
+
+    // <elements>
+    fprintf(fp, "   %s<elements>%d</elements>\n", spaces, pProp->GetNumElements());
+
+    // <flags>
+#ifdef VALUE
+    fprintf(fp, "   %s<flags>%d</flags>\n", spaces, pProp->GetFlags());
+#else
+    const char* flags_str = UTIL_SendFlagsToString(pProp->GetFlags(), pProp->GetType());
+    fprintf(fp, "   %s<flags>%s</flags>\n", spaces, flags_str);
+#endif
+
+    if (RecvTable* pOtherTable = pProp->GetDataTable())
+    {
+      UTIL_DrawRecvTable_XML(fp, pOtherTable, space_count + 3);
+    }
+
+    //  </property>
+    fprintf(fp, "  %s</property>\n", spaces);
+  }
+
+  // </sendtable>
+  fprintf(fp, " %s</sendtable>\n", spaces);
+}
+
+void UTIL_DrawClientClass_XML(FILE* fp, ClientClass* sc)
+{
+  // <serverclass name=...>
+  fprintf(fp, " <serverclass name='%s'>\n", sc->GetName());
+  UTIL_DrawRecvTable_XML(fp, sc->m_pRecvTable, 1);
+
+  // </serverclass>
+  fprintf(fp, " </serverclass>\n");
+}
+
+extern "C" __declspec(dllexport) void dump_recvprops_XML(
+  ClientClass* pclientclasshead, const char* pfilename)
+{
+  std::vector<ClientClass*> classes_list;
+  FILE *fp = fopen(pfilename, "wt");
+  if (!fp) {
+    Msg("Could not open file \"%s\"\n", pfilename);
+    return;
+  }
+  char buf[XML_BUF_SIZE];
+  fprintf(fp, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n");
+
+  char datebuf[64] = { 0 };
+  time_t now = time(nullptr);
+  struct tm* lt = localtime(&now);
+  strftime(datebuf, sizeof(datebuf), "%Y/%m/%d", lt);
+  fprintf(fp, "<!-- Dump of all network properties for \"%s\" as at %s -->\n\n",
+    p_engine_client->GetGameDirectory(),
+    datebuf);
+  fprintf(fp, "<netprops>\n");
+  for (ClientClass* pBase = pclientclasshead; pBase != nullptr; pBase = pBase->m_pNext) {
+    classes_list.push_back(pBase);
+  }
+
+  sort_classes(classes_list);
+
+  for (auto pclass : classes_list) {
+    UTIL_DrawClientClass_XML(fp, pclass);
+  }
+
+  fprintf(fp, "</netprops>\n");
+  fclose(fp);
+  Msg("Dumped netprops to %s\n", pfilename);
+}
+
+CON_COMMAND(dump_recvprops_XML, "")
+{
+  if (p_engine_client->Cmd_Argc() < 2) {
+    Msg("Usage: dump_recvprops_XML <dump.XML>\n");
+    return;
+  }
+  const char* pfilename = p_engine_client->Cmd_Argv(1);
+  dump_recvprops_XML(p_client_dll->GetAllClasses(), pfilename);
+}
+
 
 //CON_COMMAND(netprops_dump_unload, "")
 //{
