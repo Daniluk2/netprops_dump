@@ -51,13 +51,13 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..;..\..;%(AdditionalIncludeDirectories);$(HL2SDK_EP1C);$(HL2SDK_EP1)\public;$(HL2SDK_EP1C)\public\tier1;$(HL2SDK_EP1C)\vgui2\include;$(HL2SDK_EP1C)\vgui2\controls;$(HL2SDK_EP1C)\game\shared;$(HL2SDK_EP1C)\game\shared\cstrike;$(HL2SDK_EP1C)\game\client\game_controls;$(HL2SDK_EP1C)\game\client\cstrike;$(HL2SDK_EP1C)\game\client\cstrike\VGUI;$(HL2SDK_EP1C)\game\client\;$(HL2SDK_EP1C)\public\game\server\;$(HL2SDK_EP1C)\public\engine;$(HL2SDK_EP1C)\game\server\;$(HL2SDK_EP1C)\public\tier0;$(HL2SDK_EP1C)\public;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;..\..;%(AdditionalIncludeDirectories);$(HL2EP1SDK);$(HL2EP1SDK)\public;$(HL2EP1SDK)\public\tier1;$(HL2EP1SDK)\vgui2\include;$(HL2EP1SDK)\vgui2\controls;$(HL2EP1SDK)\game\shared;$(HL2EP1SDK)\game\shared\cstrike;$(HL2EP1SDK)\game\client\game_controls;$(HL2EP1SDK)\game\client\cstrike;$(HL2EP1SDK)\game\client\cstrike\VGUI;$(HL2EP1SDK)\game\client\;$(HL2EP1SDK)\public\game\server\;$(HL2EP1SDK)\public\engine;$(HL2EP1SDK)\game\server\;$(HL2EP1SDK)\public\tier0</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>$(HL2SDK_EP1C)\lib\public\mathlib.lib;$(HL2SDK_EP1C)\lib\public\tier0.lib;$(HL2SDK_EP1C)\lib\public\tier1.lib;$(HL2SDK_EP1C)\lib\public\vstdlib.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(HL2EP1SDK)\lib\public\mathlib.lib;$(HL2EP1SDK)\lib\public\tier0.lib;$(HL2EP1SDK)\lib\public\tier1.lib;$(HL2EP1SDK)\lib\public\vstdlib.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -70,7 +70,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..;..\..;%(AdditionalIncludeDirectories);$(HL2SDK_EP1C);$(HL2SDK_EP1)\public;$(HL2SDK_EP1C)\public\tier1;$(HL2SDK_EP1C)\vgui2\include;$(HL2SDK_EP1C)\vgui2\controls;$(HL2SDK_EP1C)\game\shared;$(HL2SDK_EP1C)\game\shared\cstrike;$(HL2SDK_EP1C)\game\client\game_controls;$(HL2SDK_EP1C)\game\client\cstrike;$(HL2SDK_EP1C)\game\client\cstrike\VGUI;$(HL2SDK_EP1C)\game\client\;$(HL2SDK_EP1C)\public\game\server\;$(HL2SDK_EP1C)\public\engine;$(HL2SDK_EP1C)\game\server\;$(HL2SDK_EP1C)\public\tier0;$(HL2SDK_EP1C)\public;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;..\..;%(AdditionalIncludeDirectories);$(HL2EP1SDK);$(HL2EP1SDK)\public;$(HL2EP1SDK)\public\tier1;$(HL2EP1SDK)\vgui2\include;$(HL2EP1SDK)\vgui2\controls;$(HL2EP1SDK)\game\shared;$(HL2EP1SDK)\game\shared\cstrike;$(HL2EP1SDK)\game\client\game_controls;$(HL2EP1SDK)\game\client\cstrike;$(HL2EP1SDK)\game\client\cstrike\VGUI;$(HL2EP1SDK)\game\client\;$(HL2EP1SDK)\public\game\server\;$(HL2EP1SDK)\public\engine;$(HL2EP1SDK)\game\server\;$(HL2EP1SDK)\public\tier0</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -78,7 +78,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>$(HL2SDK_EP1C)\lib\public\mathlib.lib;$(HL2SDK_EP1C)\lib\public\tier0.lib;$(HL2SDK_EP1C)\lib\public\tier1.lib;$(HL2SDK_EP1C)\lib\public\vstdlib.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(HL2EP1SDK)\lib\public\mathlib.lib;$(HL2EP1SDK)\lib\public\tier0.lib;$(HL2EP1SDK)\lib\public\tier1.lib;$(HL2EP1SDK)\lib\public\vstdlib.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

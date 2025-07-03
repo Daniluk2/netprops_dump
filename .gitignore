@@ -2,3 +2,12 @@
 */.vs
 */Release
 */Debug
+*.tlog
+*.idb
+*.log
+*.obj
+*.pdb
+*.obj
+*.recipe
+*.ipdb
+*.pdb

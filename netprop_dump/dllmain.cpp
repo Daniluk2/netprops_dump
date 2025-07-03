@@ -1,5 +1,7 @@
 ﻿//https://wiki.alliedmods.net/Entity_properties
 
+//#define CSS_61
+
 #include <vector>
 #include <algorithm>
 #include "icvar.h"
@@ -30,8 +32,6 @@ void sort_classes(std::vector<ClientClass*>& classes)
 }
 
 #define XML_BUF_SIZE 1024
-
-//#define CSS_61
 
 #if defined(_WIN32)
 inline FILE* fopen_internal(const char* p_filename, const char* p_mode)
@@ -74,7 +74,11 @@ void con_print(const char* p_format, ...)
 
 HMODULE h_this_dll = nullptr;
 FILE* p_conout = nullptr;
+#ifndef CSS_61
 ICvar* p_cvar = nullptr;
+#else
+ICvar* p_cvar = NULL;
+#endif
 IServerGameDLL* p_server_gamedll = nullptr;
 IBaseClientDLL* p_client_dll = nullptr;
 IVEngineClient* p_engine_client = nullptr;
@@ -106,13 +110,20 @@ bool init_cvars(CreateInterfaceFn p_engine_factory)
     ~convar_accessor() {}
 
     virtual bool RegisterConCommandBase(ConCommandBase* pCommand) {
+#ifndef CSS_61
       pCommand->AddFlags(FCVAR_PLUGIN);
       pCommand->SetNext(0);
       p_cvar->RegisterConCommandBase(pCommand);
+#else
+      pCommand->AddFlags(FCVAR_ARCHIVE | FCVAR_NOTIFY);
+      p_cvar->RegisterConCommand(pCommand);
+#endif
       return true;
     }
   } cvar_accessor;
-  ConCommandBaseMgr::OneTimeInit(&cvar_accessor);
+  #ifndef CSS_61
+    ConCommandBaseMgr::OneTimeInit(&cvar_accessor);
+  #endif
   return true;
 }
 
@@ -351,13 +362,21 @@ CON_COMMAND(netprops_dump_xml, "")
 {
   const char *p_filename;
   FILE       *fp = nullptr;
-  if (p_engine_server->Cmd_Argc() < 1) {
+  #ifndef CSS_61
+    if (p_engine_server->Cmd_Argc() < 1) {
+  #else
+    if (args.ArgC() < 2) {
+  #endif
     con_print("use: netprops_dump_xml <filename.xml>\n");
     return;
   }
 
   /* perform dumping */
-  p_filename = p_engine_server->Cmd_Argv(1);
+#ifndef CSS_61
+    p_filename = p_engine_server->Cmd_Argv(1);
+#else
+    p_filename = args[1];
+#endif
   fp = fopen(p_filename, "wt"); 
   if (!fp) {
     con_print("Could not open file \"%s\"\n", p_filename);
@@ -469,7 +488,7 @@ extern "C" __declspec(dllexport) void dump_recvprops_XML(
     classes_list.push_back(pBase);
   }
 
-  sort_classes(classes_list);
+  //sort_classes(classes_list);
 
   for (auto pclass : classes_list) {
     UTIL_DrawClientClass_XML(fp, pclass);
@@ -482,12 +501,21 @@ extern "C" __declspec(dllexport) void dump_recvprops_XML(
 
 CON_COMMAND(dump_recvprops_XML, "")
 {
-  if (p_engine_client->Cmd_Argc() < 2) {
+  const char* p_filename;
+#ifndef CSS_61
+  if (p_engine_server->Cmd_Argc() < 2) {
+#else
+  if (args.ArgC() < 2) {
+#endif
     Msg("Usage: dump_recvprops_XML <dump.XML>\n");
     return;
   }
-  const char* pfilename = p_engine_client->Cmd_Argv(1);
-  dump_recvprops_XML(p_client_dll->GetAllClasses(), pfilename);
+#ifndef CSS_61
+  p_filename = p_engine_server->Cmd_Argv(1);
+#else
+  p_filename = args[1];
+#endif
+  dump_recvprops_XML(p_client_dll->GetAllClasses(), p_filename);
 }
 
 
